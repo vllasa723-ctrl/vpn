@@ -11,6 +11,7 @@ jobs:
     steps:
       - env:
           GH_TOKEN: ${{ github.token }}
+          TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ $LOCATION != eastus ]]; then
@@ -23,10 +24,6 @@ jobs:
           sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
           NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
           sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
-      - name: Подключение и создание Exit Node
-        env:
-          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
-        run: |
-          sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE_AUTHKEY --hostname east-us --ssh
+          sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE --hostname east-us --ssh
           sudo apt-get install -y dstat
           dstat 60
