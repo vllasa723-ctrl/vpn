@@ -26,6 +26,6 @@ jobs:
           sleep 5
           sudo tailscale set --exit-node=east-us
           
-          wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
-          tar -xzf ookla-speedtest-1.2.0-linux-x86_64.tgz
+          wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-arm64.tgz
+          tar -xzf ookla-speedtest-1.2.0-linux-arm64.tgz
           ./speedtest --accept-license --accept-gdpr
