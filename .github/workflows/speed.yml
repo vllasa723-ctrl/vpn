@@ -28,7 +28,8 @@ jobs:
           
           wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
           tar -xzf ookla-speedtest-1.2.0-linux-x86_64.tgz
-          ./speedtest --accept-license --accept-gdpr --server-id=5113
+          lscpu
+          ./speedtest --accept-license --accept-gdpr -L
           sudo apt-get install -y iperf3
           iperf3 -c ash.speedtest.clouvider.net -p 5200 -P 10
 
