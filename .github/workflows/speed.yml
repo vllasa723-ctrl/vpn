@@ -1,7 +1,7 @@
 on: workflow_dispatch
 jobs:
   vpn:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       actions: write
     steps:
@@ -9,7 +9,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $LOCATION != eastus ]]; then
+          if [[ $LOCATION != eastus2 ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
           fi
@@ -29,4 +29,4 @@ jobs:
           
           wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz
           tar -xzf ookla-speedtest-1.2.0-linux-aarch64.tgz
-          ./speedtest --accept-license --accept-gdpr --server-id=8000
+          ./speedtest --accept-license --accept-gdpr
