@@ -18,15 +18,55 @@ jobs:
         run: |
           lscpu
           curl -fsSL https://tailscale.com/install.sh | sh
+          
+          # 1. Включаем L4-балансировку (чтобы потоки Speedtest шли по разным туннелям)
+          echo 'net.ipv4.fib_multipath_hash_policy = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+          
           NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
           sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
-          sudo tailscale up --authkey=$TS_KEY
-          sleep 5
-          sudo tailscale set --exit-node=east-us
+
+          # Останавливаем системный Tailscale, чтобы он не мешал
+          sudo systemctl stop tailscaled
+
+          # 2. Поднимаем 4 независимых демона Tailscale
+          for i in {0..3}; do
+            sudo mkdir -p /var/lib/ts$i /run/ts$i
+            
+            # Запускаем демона в фоне с уникальным портом, интерфейсом и стейтом
+            sudo tailscaled \
+              --state=/var/lib/ts$i/tailscaled.state \
+              --socket=/run/ts$i/tailscaled.sock \
+              --tun=ts$i \
+              --port=$((41641 + i)) &
+            
+            sleep 2
+            
+            # Авторизуем каждый туннель под разным именем (сервер увидит 4 разных пира)
+            sudo tailscale --socket=/run/ts$i/tailscaled.sock up \
+              --authkey=$TS_KEY \
+              --hostname=gh-runner-$i \
+              --exit-node=east-us
+          done
+
+          echo "Ждем 10 секунд для установки туннелей..."
+          sleep 10
+
+          # 3. Настраиваем балансировку
+          # Tailscale использует таблицу маршрутизации 52 для Exit Nodes.
+          # Удаляем стандартные default маршруты, которые демоны пытаются перезаписать друг у друга.
+          while sudo ip route del default table 52 2>/dev/null; do :; done
           
+          # Создаем ECMP маршрут: ядро раскидает трафик по 4 интерфейсам (ts0, ts1, ts2, ts3)
+          sudo ip route add default table 52 \
+              nexthop dev ts0 weight 1 \
+              nexthop dev ts1 weight 1 \
+              nexthop dev ts2 weight 1 \
+              nexthop dev ts3 weight 1
+
+          # 4. Тест скорости
           wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz
           tar -xzf ookla-speedtest-1.2.0-linux-aarch64.tgz
           ./speedtest --accept-license --accept-gdpr
