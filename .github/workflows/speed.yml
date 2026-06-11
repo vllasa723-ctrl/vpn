@@ -16,10 +16,16 @@ jobs:
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
         run: |
+          # Проверка на пустой ключ
+          if [[ -z "$TS_KEY" ]]; then
+            echo "ОШИБКА: Ключ TAILSCALE_KEY пуст! Проверьте GitHub Secrets."
+            exit 1
+          fi
+
           lscpu
           curl -fsSL https://tailscale.com/install.sh | sh
           
-          # Включаем L4-балансировку
+          # Настраиваем L4-балансировку в ядре Linux
           echo 'net.ipv4.fib_multipath_hash_policy = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
@@ -28,10 +34,10 @@ jobs:
           NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
           sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
 
-          # Останавливаем системный Tailscale
+          # Выключаем дефолтный сервис Tailscale
           sudo systemctl stop tailscaled
 
-          # 1. Запускаем 4 фоновых демона Tailscale
+          # 1. Запускаем 4 фоновых демона Tailscale с разными сокетами
           for i in {0..3}; do
             sudo mkdir -p /var/lib/ts$i /run/ts$i
             sudo tailscaled \
@@ -43,37 +49,41 @@ jobs:
 
           sleep 3
 
-          # 2. Авторизуем каждый туннель (без указания exit-node)
-          # Отключаем прием DNS, чтобы 4 процесса не пытались одновременно менять resolv.conf
+          # 2. Авторизуем туннели ПО ОЧЕРЕДИ с паузой, чтобы избежать 502 Bad Gateway
           for i in {0..3}; do
+            echo "Авторизация туннеля ts$i..."
             sudo tailscale --socket=/run/ts$i/tailscaled.sock up \
-              --authkey=$TS_KEY \
-              --hostname=gh-runner-$i \
-              --accept-dns=false
+              --authkey="$TS_KEY" \
+              --hostname="gh-runner-$i" \
+              --accept-dns=false \
+              --timeout=15s
+            
+            # Пауза для защиты от Rate Limit сервера авторизации
+            sleep 3 
           done
 
-          echo "Ждем 10 секунд для синхронизации карты сети (netmap)..."
+          echo "Ждем 10 секунд для синхронизации карт сети..."
           sleep 10
 
-          # 3. Назначаем exit-node теперь, когда клиенты знают, кто такой east-us
+          # 3. Назначаем Exit-node
           for i in {0..3}; do
+            echo "Настройка exit-node для ts$i..."
             sudo tailscale --socket=/run/ts$i/tailscaled.sock set --exit-node=east-us
           done
 
-          echo "Ждем 5 секунд для применения маршрутов exit-node..."
           sleep 5
 
-          # 4. Удаляем конкурирующие default-маршруты из таблицы маршрутизации Tailscale (52)
+          # 4. Балансировка: удаляем старые маршруты
           while sudo ip route del default table 52 2>/dev/null; do :; done
           
-          # 5. Создаем единый ECMP маршрут для балансировки по 4 интерфейсам
+          # 5. Балансировка: создаем общий ECMP маршрут для всех 4 интерфейсов
           sudo ip route add default table 52 \
               nexthop dev ts0 weight 1 \
               nexthop dev ts1 weight 1 \
               nexthop dev ts2 weight 1 \
               nexthop dev ts3 weight 1
 
-          # Тест скорости
+          # 6. Тестируем итоговую скорость
           wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz
           tar -xzf ookla-speedtest-1.2.0-linux-aarch64.tgz
           ./speedtest --accept-license --accept-gdpr
