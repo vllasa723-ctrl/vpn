@@ -29,4 +29,4 @@ jobs:
           
           wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz
           tar -xzf ookla-speedtest-1.2.0-linux-aarch64.tgz
-          ./speedtest --accept-license --accept-gdpr
+          ./speedtest --accept-license --accept-gdpr --server-id=8000
