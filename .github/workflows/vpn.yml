@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
   schedule:
-    - cron: 0 */6 * * *
+    - cron: 43 */6 * * *
 jobs:
   vpn:
     runs-on: ubuntu-latest
