@@ -1,7 +1,7 @@
 on: workflow_dispatch
 jobs:
   vpn:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
