@@ -17,6 +17,11 @@ jobs:
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
           fi
+          sudo apt-get update
+          sudo apt-get install -y mtr hping3 curl
+          sudo mtr --tcp --port 443 149.154.167.91
+          sudo hping3 -S -p 443 -c 10 149.154.167.91
+          curl -w "DNS: %{time_namelookup}s\nTCP Установка (RTT): %{time_connect}s\nTLS Шифрование: %{time_appconnect}s\nВремя до первого байта: %{time_starttransfer}s\nОбщее время: %{time_total}s\n" -o /dev/null -s https://core.telegram.org
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
         run: |
