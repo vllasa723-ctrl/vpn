@@ -1,7 +1,7 @@
 on: workflow_dispatch
 jobs:
   vpn:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
@@ -9,7 +9,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $LOCATION != eastus2 ]]; then
+          if [[ $LOCATION != eastus ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
           fi
@@ -22,6 +22,7 @@ jobs:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
         run: |
           lscpu
+          exit 1
           curl -fsSL https://tailscale.com/install.sh | sh
           echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
