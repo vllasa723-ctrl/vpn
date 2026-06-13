@@ -4,7 +4,7 @@ on:
     - cron: 43 */3 * * *
 jobs:
   vpn:
-    runs-on: ubuntu-26.04-arm
+    runs-on: ubuntu-24.04-arm
     permissions:
       actions: write
     steps:
