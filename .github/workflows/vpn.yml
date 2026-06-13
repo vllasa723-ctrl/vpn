@@ -31,5 +31,5 @@ jobs:
           sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE --hostname east-us --ssh
           gh release download -p '*_linux_arm64.deb' -R juanfont/headscale
           sudo apt-get install -y ./*_linux_arm64.deb
-          /usr/bin/headscale preauthkeys create --help
+          /usr/bin/headscale preauthkeys create -e 2540400h --reusable
           while true; do sudo tailscale status --active --header; sleep 60; done
