@@ -29,4 +29,5 @@ jobs:
           sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
           sudo ethtool -k $NETDEV | grep ": off"
           sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE --hostname east-us --ssh
+          gh release download -R juanfont/headscale -p *_linux_arm64.deb
           while true; do sudo tailscale status --active --header; sleep 60; done
