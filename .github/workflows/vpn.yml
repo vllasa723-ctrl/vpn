@@ -4,7 +4,7 @@ on:
     - cron: 43 */6 * * *
 jobs:
   vpn:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     permissions:
       actions: write
     steps:
@@ -13,6 +13,8 @@ jobs:
           SESSION: ${{ secrets.SESSION }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
+          lscpu
+
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ ${LOCATION,,} != eastus* ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
