@@ -19,8 +19,8 @@ jobs:
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
           fi
-          wget https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz
-          tar xzf ookla-speedtest-1.2.0-linux-aarch64.tgz speedtest && ./speedtest --accept-license --accept-gdpr
+          wget https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
+          tar xzf ookla-speedtest-1.2.0-linux-x86_64.tgz speedtest && ./speedtest --accept-license --accept-gdpr
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo systemctl stop tailscaled
           echo "$SESSION" | sudo tee /var/lib/tailscale/tailscaled.state
