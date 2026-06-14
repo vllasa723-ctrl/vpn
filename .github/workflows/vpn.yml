@@ -5,15 +5,12 @@ on:
 jobs:
   vpn:
     runs-on: ubuntu-26.04
-    permissions:
-      actions: write
     steps:
       - env:
           GH_TOKEN: ${{ github.token }}
           SESSION: ${{ secrets.SESSION }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
-          openssl --version
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ ${LOCATION,,} != eastus ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
