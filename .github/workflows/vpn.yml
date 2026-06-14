@@ -15,7 +15,7 @@ jobs:
         run: |
           LOCATION=$(curl -s http://ip-api.com/line?fields=city)
           echo $LOCATION
-          if [[ ${LOCATION,,} != Ashburn ]]; then
+          if [[ ${LOCATION,,} != Ash* ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
           fi
