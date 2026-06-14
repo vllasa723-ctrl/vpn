@@ -15,6 +15,7 @@ jobs:
         run: |
           uname -a
           LOCATION=$(curl -s ipinfo.io/city)
+          echo $LOCATION
           if [[ ${LOCATION,,} != Ashburn ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
               exit 1
