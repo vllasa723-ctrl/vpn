@@ -13,6 +13,7 @@ jobs:
           SESSION: ${{ secrets.SESSION }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
+          lscpu
           LOCATION=$(curl -s http://ip-api.com/line?fields=city)
           echo $LOCATION
           if [[ ${LOCATION,,} != Ash* ]]; then
