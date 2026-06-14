@@ -14,7 +14,7 @@ jobs:
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
           uname -a
-          LOCATION=$(curl -s ipinfo.io/city)
+          LOCATION=$(http://ip-api.com/line?fields=city)
           echo $LOCATION
           if [[ ${LOCATION,,} != Ashburn ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
