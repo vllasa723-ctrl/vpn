@@ -9,6 +9,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
+          git clone --bare https://github.com/torvalds/linux.git
+          cd linux.git
+          git rev-list --count v6.17..v7.0
+          git diff --shortstat v6.17..v7.0
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ $LOCATION != eastus* ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
