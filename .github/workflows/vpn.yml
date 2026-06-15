@@ -10,7 +10,7 @@ jobs:
     steps:
       - run: |
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ ${LOCATION,,} != eastus ]]; then
+          if [[ $LOCATION != eastus ]]; then
               gh workflow run "${{ github.workflow }}"
               exit 1
           fi
