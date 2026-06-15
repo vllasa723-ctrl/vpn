@@ -9,7 +9,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
-          sudo dmidecode -t 1
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ $LOCATION != eastus ]]; then
               gh workflow run "$GITHUB_WORKFLOW" --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
@@ -17,8 +16,7 @@ jobs:
           fi
           sudo apt-get update
           sudo apt-get install -y mtr hping3 curl
-          sudo mtr --tcp --port 443 -r -w -c 5 tiktok.com
-          sudo hping3 -S -p 443 -c 4 tiktok.com
+          sudo hping3 -S -p 443 149.154.167.50
           curl -w "DNS: %{time_namelookup}s\nTCP Установка (RTT): %{time_connect}s\nTLS Шифрование: %{time_appconnect}s\nОбщее время: %{time_total}s\n" -o /dev/null -s https://core.telegram.org
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
