@@ -15,6 +15,9 @@ jobs:
               exit 1
           fi
           curl -fsSL https://tailscale.com/install.sh | sh
+          sudo systemctl stop tailscaled
+          echo "$SESSION" | sudo tee /var/lib/tailscale/tailscaled.state
+          sudo systemctl start tailscaled
           sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE --hostname east-us --ssh
           while true; do sudo tailscale status --active --header; sleep 60; done
         env:
