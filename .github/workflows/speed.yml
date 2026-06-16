@@ -14,8 +14,9 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          sudo apt install fastfetch
+          sudo apt-get install -y fastfetch stress-ng
           fastfetch
+          stress-ng --stream 0 -t 10s --metrics-brief
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
         run: |
