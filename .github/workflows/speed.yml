@@ -9,14 +9,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
+          CPU=$(lscpu)
+          echo $CPU
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $LOCATION != eastus ]]; then
+          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          sudo apt-get install -y fastfetch stress-ng
-          fastfetch
-          stress-ng --stream 0 -t 10s --metrics-brief
+          openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
         run: |
