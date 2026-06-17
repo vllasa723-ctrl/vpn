@@ -11,6 +11,7 @@ jobs:
         run: |
           CPU=$(lscpu)
           echo $CPU
+          mpstat -P ALL 60 1
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
           if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
