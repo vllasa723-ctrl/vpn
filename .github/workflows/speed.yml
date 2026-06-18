@@ -18,8 +18,9 @@ jobs:
           fi
           pip install uv
           uv cache clean
-          mkdir -p /dev/shm/uv_speed_test
-          uv pip download --no-cache -d /dev/shm/uv_speed_test --platform manylinux2014_x86_64 --python-version 3.10 torch torchvision torchaudio tensorflow jax jaxlib ray[all] transformers
+          export UV_CACHE_DIR=/dev/shm/uv_cache
+          uv venv /dev/shm/uv_venv
+          uv pip install --python /dev/shm/uv_venv torch torchvision torchaudio tensorflow jax jaxlib ray[all] transformers
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
