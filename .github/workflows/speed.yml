@@ -16,6 +16,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          sudo traceroute -T -p 443 149.154.167.91
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
