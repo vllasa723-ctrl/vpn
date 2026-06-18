@@ -16,6 +16,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          openssl speed -multi $(nproc) -evp sha256
           sudo lshw -class network -short
           sudo apt-get install -y nmap
           nping --tcp-connect -p 443 -c 25 1.1.1.1
