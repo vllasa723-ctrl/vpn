@@ -19,8 +19,8 @@ jobs:
           pip install uv
           uv cache clean
           export UV_CACHE_DIR=/dev/shm/uv_cache
-          uv venv --python 3.13 /dev/shm/uv_venv
-          uv pip install --python /dev/shm/uv_venv torch torchvision torchaudio tensorflow jax jaxlib ray[all] transformers
+          uv venv /dev/shm/uv_venv
+          uv pip install --python /dev/shm/uv_venv torch
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
