@@ -17,7 +17,7 @@ jobs:
               exit 1
           fi
           sudo apt-get install -y traceroute
-          sudo traceroute -T -p 443 149.154.167.91
+          sudo traceroute -T -p 443 1.1.1.1
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
