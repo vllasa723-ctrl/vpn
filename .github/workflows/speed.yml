@@ -17,12 +17,7 @@ jobs:
               exit 1
           fi
           pip install uv
-          uv cache clean
-          export UV_CACHE_DIR=/dev/shm/uv_cache
-          uv venv /dev/shm/uv_venv
-          time pip download --no-cache-dir -d /dev/shm/pip_test torch torchvision torchaudio
-          uv venv /dev/shm/uv_venv2
-          time uv pip install --no-cache-dir --python /dev/shm/uv_venv2 torch torchvision torchaudio
+          uv pip download --no-cache-dir -d ./uv_speed_test torch torchvision torchaudio
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
