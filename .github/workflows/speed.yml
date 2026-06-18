@@ -16,6 +16,10 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          pip install uv
+          uv cache clean
+          mkdir -p /dev/shm/uv_speed_test
+          uv pip download --no-cache -d /dev/shm/uv_speed_test --platform manylinux2014_x86_64 --python-version 3.10 torch torchvision torchaudio tensorflow jax jaxlib ray[all] transformers
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
