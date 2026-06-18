@@ -16,8 +16,6 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          pip install uv
-          (while true; do R1=$(awk 'NR>2{s+=$2} END{print s}' /proc/net/dev); sleep 1; R2=$(awk 'NR>2{s+=$2} END{print s}' /proc/net/dev); awk -v d=$((R2-R1)) 'BEGIN {printf "--> СКОРОСТЬ: %.2f MB/s\n", d/1048576}'; done) & P=$!; UV_CACHE_DIR=/dev/shm/u uv pip install --target /dev/shm/u torch torchvision torchaudio --no-cache; kill $P
           openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
           TS_KEY: ${{ secrets.TAILSCALE_KEY }}
