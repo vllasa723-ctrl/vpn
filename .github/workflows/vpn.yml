@@ -4,15 +4,15 @@ on:
     - cron: 0 */1 * * *
 jobs:
   vpn:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-26.04-arm
     permissions:
       actions: write
     steps:
       - run: |
-          CPU=$(lscpu)
+          CPU=$("AMD EPYC 9V74 80-Core Processor")
           echo $CPU
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
+          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus2 ]]; then
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
