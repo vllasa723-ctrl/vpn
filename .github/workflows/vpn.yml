@@ -23,6 +23,8 @@ jobs:
           echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
           sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+          echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p
           NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
           sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
           sudo tailscale up --advertise-exit-node --auth-key $TAILSCALE --hostname east-us --ssh
