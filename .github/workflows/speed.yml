@@ -16,6 +16,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          for r in eastus eastus2 westus westus2 centralus northeurope westeurope uksouth francecentral germanywestcentral switzerlandnorth norwayeast polandcentral swedencentral italynorth japaneast japanwest koreacentral eastasia southeastasia australiaeast centralindia uaenorth israelcentral southafricanorth brazilsouth; do printf "%-25s " "$r"; curl -o /dev/null -s -w "%{time_total}\n" --max-time 2 "http://${r}.blob.core.windows.net/" "http://${r}.blob.core.windows.net/" | tail -n 1 | awk '{printf "%d ms\n", $1 * 1000}'; done
           openssl speed -multi $(nproc) -evp sha256
           sudo lshw -class network -short
           sudo apt-get install -y nmap
