@@ -4,3 +4,4 @@ eastus
 centralus
 westcentralus
 eastus2
+WestUS3
