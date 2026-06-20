@@ -2,3 +2,4 @@ northcentralus
 westus
 eastus
 centralus
+westcentralus
