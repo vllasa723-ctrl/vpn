@@ -16,16 +16,8 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          for r in eastus eastus2 westus westus2 centralus northeurope westeurope uksouth francecentral germanywestcentral switzerlandnorth norwayeast polandcentral swedencentral italynorth japaneast japanwest koreacentral eastasia southeastasia australiaeast centralindia uaenorth israelcentral southafricanorth brazilsouth; do printf "%-25s " "$r"; LC_ALL=C curl -o /dev/null -s -w "%{time_total}\n" --max-time 3 "https://${r}.api.azureml.ms/" "https://${r}.api.azureml.ms/" | tail -n 1 | LC_ALL=C awk '{val=$1*1000; if(val>0) printf "%d ms\n", val; else print "Error/Timeout"}'; done
-          openssl speed -multi $(nproc) -evp sha256
-          sudo lshw -class network -short
-          sudo apt-get install -y nmap
-          nping --tcp-connect -p 443 -c 25 1.1.1.1
-          nping --tcp-connect -p 443 -c 25 8.8.8.8
-          nping --tcp-connect -p 443 -c 25 77.88.8.8
-          openssl speed -multi $(nproc) -evp chacha20-poly1305
       - env:
-          TS_KEY: ${{ secrets.TAILSCALE_KEY }}
+          TS_KEY: ${{ secrets.TAILSCALE }}
         run: |
           lscpu
           curl -fsSL https://tailscale.com/install.sh | sh
@@ -37,7 +29,3 @@ jobs:
           sudo tailscale up --authkey=$TAILSCALE
           sleep 5
           sudo tailscale set --exit-node=east-us
-          
-          wget -q https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
-          tar -xzf ookla-speedtest-1.2.0-linux-x86_64.tgz
-          ./speedtest --accept-license --accept-gdpr
