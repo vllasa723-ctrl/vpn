@@ -6,3 +6,4 @@ westcentralus
 eastus2
 WestUS3
 westus2
+southcentralus
