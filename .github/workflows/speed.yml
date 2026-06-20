@@ -29,3 +29,4 @@ jobs:
           sudo tailscale up --authkey=$TAILSCALE
           sleep 5
           sudo tailscale set --exit-node=east-us
+          sleep 5
