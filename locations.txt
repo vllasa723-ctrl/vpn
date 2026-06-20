@@ -3,3 +3,4 @@ westus
 eastus
 centralus
 westcentralus
+eastus2
