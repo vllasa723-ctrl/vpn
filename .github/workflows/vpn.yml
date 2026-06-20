@@ -16,7 +16,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          echo -e '#include <immintrin.h>\n#include <stdio.h>\nint main(){__m512 v=_mm512_setzero_ps();puts("AVX512 WORKS");return 0;}' | gcc -mavx512f -x c - -o /tmp/avx512_test && /tmp/avx512_test
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo systemctl stop tailscaled
           echo "$SESSION" | sudo tee /var/lib/tailscale/tailscaled.state
