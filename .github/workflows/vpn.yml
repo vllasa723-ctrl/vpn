@@ -16,6 +16,10 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          wget https://cdn.geekbench.com/Geekbench-6.7.1-Linux.tar.gz
+          tar -zxvf Geekbench-6.7.1-Linux.tar.gz
+          cd Geekbench-6.7.1-Linux
+          ./geekbench6
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo systemctl stop tailscaled
           echo "$SESSION" | sudo tee /var/lib/tailscale/tailscaled.state
