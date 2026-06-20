@@ -18,6 +18,8 @@ jobs:
           fi
           wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
           sudo dpkg -i cloudflared-linux-amd64.deb
+          sysctl -w net.core.rmem_max=7500000
+          sysctl -w net.core.wmem_max=7500000
           cloudflared tunnel --metrics localhost:20241 --url http://localhost:20241 &
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo systemctl stop tailscaled
