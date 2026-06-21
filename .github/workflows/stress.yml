@@ -1,0 +1,17 @@
+on: workflow_dispatch
+jobs:
+  stress:
+    runs-on: ubuntu-26.04
+    permissions:
+      actions: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CPU=$(lscpu)
+          echo $CPU
+          LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
+          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
+              gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
+              exit 1
+          fi
