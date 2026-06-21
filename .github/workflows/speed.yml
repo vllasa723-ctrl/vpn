@@ -32,6 +32,8 @@ jobs:
           sleep 5
           sudo tailscale set --exit-node=east-us
           sleep 5
-          sudo apt-get install -y iperf
-          iperf -c 100.126.171.44 -P 4 -t 30
-          iperf -c 100.126.171.44 -P 4 -t 30 -R
+          git clone https://github.com/Microsoft/ntttcp-for-linux
+          cd ntttcp-for-linux/src
+          make
+          sudo make install
+          ntttcp -s -m 4,*,100.126.171.44 -t 60
