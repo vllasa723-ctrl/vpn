@@ -20,7 +20,7 @@ jobs:
           sudo dpkg -i cloudflared-linux-amd64.deb
           sudo sysctl -w net.core.rmem_max=7500000
           sudo sysctl -w net.core.wmem_max=7500000
-          cloudflared --help
+          cloudflared tunnel --metrics localhost:20241 --url http://localhost:20241 &
           curl -fsSL https://tailscale.com/install.sh | sh
           sudo systemctl stop tailscaled
           echo "$SESSION" | sudo tee /var/lib/tailscale/tailscaled.state
