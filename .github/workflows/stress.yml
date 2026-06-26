@@ -5,3 +5,4 @@ jobs:
     steps:
       - run: |
           sudo apt-get install -y xdp-tools
+          ethtool -l eth0
