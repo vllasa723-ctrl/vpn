@@ -5,4 +5,4 @@ jobs:
     steps:
       - run: |
           sudo apt-get install -y xdp-tools
-          xdp-trafficgen --help
+          xdp-trafficgen help
