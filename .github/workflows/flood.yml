@@ -1,0 +1,8 @@
+on: workflow_dispatch
+jobs:
+  http:
+    runs-on: ubuntu-26.04-arm
+    steps:
+      - run: |
+          sudo apt-get install -y wrk
+          wrk -t4 -c65000 -d60s http://1.1.1.1/
