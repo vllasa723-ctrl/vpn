@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 import google.generativeai as genai
 
 TOKEN = "8746891105:AAHToDt57KKDRjN5amJT8160cOHZdvkbKoI"
-genai.configure(api_key="AQ.Ab8RN6KuCwM0uL6IHWKOo1Bq3ckcPQxyIpyaSW2lB1qU64cHwQ")
+genai.configure(api_key="AIzaSyCmaYEnt5S15PpuJOAnoqd5f8jYNVS5VYY")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
