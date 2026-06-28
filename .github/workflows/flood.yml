@@ -9,6 +9,8 @@ jobs:
       - run: |
           git clone https://github.com/SillyTavern/SillyTavern.git
           cd SillyTavern
+          cp default/config.yaml config.yaml
+          sed -i 's/whitelistMode: true/whitelistMode: false/g' config.yaml
           ./start.sh &
           wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
           sudo apt-get install -y ./cloudflared-linux-amd64.deb
