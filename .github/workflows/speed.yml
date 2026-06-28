@@ -29,10 +29,8 @@ jobs:
           sudo tailscale up --auth-key=$TAILSCALE
           sleep 5
           sudo tailscale set --exit-node=east-us
-          sleep 5
-          sudo apt-get install -y iperf3
-          iperf3 -c 100.126.171.44 -p 5201 -t 20 & \
-          iperf3 -c 100.126.171.44 -p 5202 -t 20 & \
-          iperf3 -c 100.126.171.44 -p 5203 -t 20 & \
-          iperf3 -c 100.126.171.44 -p 5204 -t 20 & \
-          wait
+          git clone https://github.com/microsoft/ntttcp-for-linux.git
+          cd ntttcp-for-linux/src
+          make
+          sudo make install
+          ntttcp -s -m 4,*,100.126.171.44
