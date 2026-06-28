@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: |
-          pip install aiogram
+          pip install aiogram google-generativeai
           python main.py
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
