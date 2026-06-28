@@ -13,7 +13,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
-          sudo apt-get install -y traceroute
-          sudo traceroute -T -p 443 193.142.246.68
+          sudo apt-get install -y tcptraceroute
+          sudo tcptraceroute 193.142.246.68 443
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
