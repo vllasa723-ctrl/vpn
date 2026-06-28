@@ -9,6 +9,9 @@ jobs:
       - run: |
           git clone https://github.com/SillyTavern/SillyTavern.git
           cd SillyTavern
-          ./start.sh
+          ./start.sh &
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo apt-get install -y ./cloudflared-linux-amd64.deb
+          cloudflared tunnel --url http://127.0.0.1:8000
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
