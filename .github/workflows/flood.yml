@@ -13,6 +13,7 @@ jobs:
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
+          sudo apt-get install -y traceroute
           sudo traceroute -T -p 443 31.200.238.58
           sudo apt-get install -y mtr
           sudo mtr -T -P 443 109.126.1.250
