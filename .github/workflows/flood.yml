@@ -1,8 +1,18 @@
 on: workflow_dispatch
 jobs:
   http:
-    runs-on: ubuntu-26.04-arm
+    runs-on: ubuntu-26.04
+    permissions:
+      actions: write
     steps:
       - run: |
-          sudo apt-get install -y wrk
-          wrk -t4 -c65000 -d60s http://1.1.1.1/
+          CPU=$(lscpu)
+          echo $CPU
+          LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
+          if [[ $CPU != *'BogoMIPS'* || $LOCATION != westus ]]; then
+              gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
+              exit 1
+          fi
+          sudo traceroute -T -p 443 31.200.238.58
+          sudo apt-get install -y mtr
+          sudo mtr -T -P 443 109.126.1.250
