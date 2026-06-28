@@ -5,7 +5,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 import google.generativeai as genai
 
-TOKEN = "8746891105:AAEXzLKMlPNVHMN6kLpO11fDJlRFlFeI_2s"
+TOKEN = "8746891105:AAHToDt57KKDRjN5amJT8160cOHZdvkbKoI"
 genai.configure(api_key="AQ.Ab8RN6KuCwM0uL6IHWKOo1Bq3ckcPQxyIpyaSW2lB1qU64cHwQ")
 
 bot = Bot(token=TOKEN)
