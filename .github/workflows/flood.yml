@@ -9,12 +9,11 @@ jobs:
           CPU=$(lscpu)
           echo $CPU
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
-          if [[ $CPU != *'BogoMIPS'* || $LOCATION != westus2 ]]; then
+          if [[ $CPU != *'AMD EPYC 9V74 80-Core Processor'* || $LOCATION != eastus ]]; then
               gh workflow run "${{ github.workflow }}" -R "${{ github.repository }}"
               exit 1
           fi
           sudo apt-get install -y traceroute
-          curl -w "Пинг (задержка до Владивостока): %{time_connect} секунд\n" -s -o /dev/null https://vvsu.ru
-          sudo traceroute -T -p 443 vvsu.ru
+          sudo traceroute -T -p 443 193.142.246.68
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
