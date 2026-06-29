@@ -31,3 +31,5 @@ jobs:
           sudo tailscale set --exit-node=east-us
           sleep 5
           sudo ping -c 250 -f 100.126.171.44 | tail -1 | awk '{print $4}' | cut -d '/' -f 1
+          sudo apt-get install -y wrk
+          wrk -t$(nproc) -c1000 -d150s http://1.1.1.1/
