@@ -9,6 +9,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAILSCALE: ${{ secrets.TAILSCALE }}
         run: |
+          pip install pystun3
+          pystun3
           CPU=$(lscpu)
           echo $CPU
           LOCATION=$(curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-04-02&format=text")
